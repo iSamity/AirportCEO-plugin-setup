@@ -1,0 +1,58 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net46</TargetFramework>
+    <AssemblyName>TemplateSource</AssemblyName>
+    <Product>__PLUGIN_DISPLAY_NAME__</Product>
+    <Version>1.0.0</Version>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <LangVersion>latest</LangVersion>
+    <RestoreAdditionalProjectSources>
+      https://api.nuget.org/v3/index.json;
+      https://nuget.bepinex.dev/v3/index.json;
+      https://nuget.samboy.dev/v3/index.json
+    </RestoreAdditionalProjectSources>
+    <RootNamespace>TemplateSource</RootNamespace>
+  </PropertyGroup>
+
+  <!-- Override in Directory.Build.props or `dotnet build -p:Key=value` if your install paths differ. Set DisableAirportCeoPostCopy=true to skip all copy steps (e.g. CI). -->
+  <PropertyGroup>
+    <AirportCeoBepInExPluginsDir Condition="'$(AirportCeoBepInExPluginsDir)' == ''">C:\Program Files (x86)\Steam\steamapps\common\Airport CEO\BepInEx\plugins</AirportCeoBepInExPluginsDir>
+    <AirportCeoModsPublishDir Condition="'$(AirportCeoModsPublishDir)' == ''">$(USERPROFILE)\AppData\Roaming\Apoapsis Studios\Airport CEO\Mods\$(AssemblyName)\plugins</AirportCeoModsPublishDir>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all" />
+    <PackageReference Include="BepInEx.Core" Version="5.*" />
+    <PackageReference Include="BepInEx.PluginInfoProps" Version="2.*" />
+    <PackageReference Include="Lib.Harmony" Version="2.*" />
+    <PackageReference Include="UnityEngine.Modules" Version="2019.4.40" IncludeAssets="compile" />
+  </ItemGroup>
+
+  <!-- Libs/: see Libs/README.txt. Baseline = publicized game asm + mod loader; optional refs (UI, ShortcutCEO, etc.) you add yourself. Private=false = compile-only, not copied to output. -->
+  <ItemGroup Condition="Exists('Libs\Assembly-CSharp-publicized.dll')">
+    <Reference Include="Assembly-CSharp">
+      <HintPath>Libs\Assembly-CSharp-publicized.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup Condition="Exists('Libs\AirportCEOModLoader.dll')">
+    <Reference Include="AirportCEOModLoader">
+      <HintPath>Libs\AirportCEOModLoader.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="all" />
+  </ItemGroup>
+
+  <!-- Debug + Release: copy to BepInEx plugins (quick test). Release only: also copy to Apoapsis Mods\<AssemblyName>\plugins (packaging / uploader layout). -->
+  <Target Name="PostBuild" AfterTargets="Build" Condition="'$(DisableAirportCeoPostCopy)' != 'true'">
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(AirportCeoBepInExPluginsDir)" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="$(TargetDir)$(TargetName).pdb" DestinationFolder="$(AirportCeoBepInExPluginsDir)" SkipUnchangedFiles="true" Condition="Exists('$(TargetDir)$(TargetName).pdb')" />
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(AirportCeoModsPublishDir)" SkipUnchangedFiles="true" Condition="'$(Configuration)' == 'Release'" />
+    <Copy SourceFiles="$(TargetDir)$(TargetName).pdb" DestinationFolder="$(AirportCeoModsPublishDir)" SkipUnchangedFiles="true" Condition="'$(Configuration)' == 'Release' AND Exists('$(TargetDir)$(TargetName).pdb')" />
+  </Target>
+
+</Project>

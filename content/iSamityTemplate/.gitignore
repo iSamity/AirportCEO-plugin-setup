@@ -1,0 +1,3 @@
+# Game binaries referenced from Libs/ (keep local only unless license allows publishing)
+Libs/*.dll
+Libs/*.pdb

@@ -1,0 +1,85 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "author": "iSamity",
+  "classifications": [ "BepInEx", "Airport CEO", "Mod" ],
+  "identity": "iSamity.Templates.BepInEx.AirportCEO",
+  "name": "iSamity BepInEx plugin (Airport CEO)",
+  "shortName": "iSamityTemplate",
+  "sourceName": "TemplateSource",
+  "preferNameDirectory": true,
+  "tags": {
+    "language": "C#",
+    "type": "project"
+  },
+  "symbols": {
+    "mod-name": {
+      "type": "parameter",
+      "datatype": "string",
+      "defaultValue": "",
+      "displayName": "Mod display name",
+      "description": "Human-readable product / display name in the .csproj. When omitted, defaults to the project name (-n)."
+    },
+    "PluginDisplay": {
+      "type": "generated",
+      "generator": "coalesce",
+      "parameters": {
+        "sourceVariableName": "mod-name",
+        "defaultValue": "",
+        "fallbackVariableName": "name"
+      },
+      "replaces": "__PLUGIN_DISPLAY_NAME__"
+    },
+    "WithConfig": {
+      "type": "parameter",
+      "datatype": "choice",
+      "enableQuotelessLiterals": true,
+      "choices": [
+        {
+          "choice": "true",
+          "description": "Include Config/ and DefaultConfig wiring in Plugin.cs."
+        },
+        {
+          "choice": "false",
+          "description": "Omit Config/ and related Plugin.cs code."
+        }
+      ],
+      "defaultValue": "true",
+      "displayName": "Include BepInEx config",
+      "description": "Include Config/ and DefaultConfig wiring in Plugin.cs. When false, omits the Config folder and related code."
+    },
+    "VscSupport": {
+      "type": "parameter",
+      "datatype": "choice",
+      "enableQuotelessLiterals": true,
+      "choices": [
+        {
+          "choice": "true",
+          "description": "Add .vscode/tasks.json and scripts/ for build + optional Steam launch."
+        },
+        {
+          "choice": "false",
+          "description": "Do not add editor tasks or scripts/."
+        }
+      ],
+      "defaultValue": "false",
+      "displayName": "VS Code / Cursor support",
+      "description": "Include .vscode/tasks.json and scripts/ (PowerShell build + Steam launch). Off by default."
+    }
+  },
+  "sources": [
+    {
+      "source": "./",
+      "target": "./",
+      "modifiers": [
+        {
+          "condition": "(WithConfig == false)",
+          "exclude": [ "Config/**" ]
+        },
+        {
+          "condition": "(VscSupport == false)",
+          "exclude": [ ".vscode/**", "scripts/**" ]
+        }
+      ]
+    }
+  ]
+}

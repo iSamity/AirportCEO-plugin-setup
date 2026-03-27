@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json.schemastore.org/dotnetcli.host",
+  "symbolInfo": {
+    "mod-name": {
+      "longName": "mod-name",
+      "shortName": "mn"
+    },
+    "WithConfig": {
+      "longName": "with-config",
+      "shortName": "wc"
+    },
+    "VscSupport": {
+      "longName": "vsc-support",
+      "shortName": "vsc"
+    }
+  }
+}
