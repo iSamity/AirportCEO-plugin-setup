@@ -3,7 +3,7 @@
   "author": "iSamity",
   "classifications": [ "BepInEx", "Airport CEO", "Mod" ],
   "identity": "iSamity.Templates.BepInEx.AirportCEO",
-  "name": "iSamity BepInEx plugin (Airport CEO)",
+  "name": "ModTemplates — BepInEx 5 plugin (Airport CEO)",
   "shortName": "iSamityTemplate",
   "sourceName": "TemplateSource",
   "preferNameDirectory": true,
